@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  data-export:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8007:8007"
+    restart: always
+    labels:
+      - "com.aioapp.description=Employee data reflection service"
+      - "com.aioapp.vendor=AIOApp Inc."

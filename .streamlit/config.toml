@@ -1,0 +1,5 @@
+[server]
+port = 8007
+
+[client]
+showSidebarNavigation = false

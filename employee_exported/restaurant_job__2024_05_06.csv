@@ -1,0 +1,22 @@
+Applies To,Job Id,Job Title,Job Code,Pay Basis,Default Wage,Tipped?,Cashier?,Driver?
+Enoteca la Storia - Los Gatos,f7dc1959-d6e0-47ba-94a3-207f2e9f2d57,Admin,,HOURLY,20.00,false,false,false
+Enoteca la Storia - Los Gatos,d6ee27e1-0d9c-416d-a7df-53e92a59ee4c,Busser,Busser,HOURLY,14.00,true,false,false
+Enoteca la Storia - Los Gatos,8c840ea1-f08d-4528-8017-003a00608e62,Chef,,SALARY,,false,false,false
+Enoteca la Storia - Los Gatos,29e497f6-7b53-4be0-8665-99a33ffac287,Cook,,HOURLY,14.00,true,false,false
+Enoteca la Storia - Los Gatos,f06f8969-dd86-4529-9816-f4f669d0620f,Dishwasher,,HOURLY,14.00,true,false,false
+Enoteca la Storia - Los Gatos,c03ab67e-7388-4675-975f-17acdb8000a0,Dishwasher,Dishwasher,HOURLY,15.00,true,false,false
+Enoteca la Storia - Los Gatos,34a4f833-60f3-40d9-8d7c-136f33e4a91d,Driver,Driver,HOURLY,14.00,false,false,true
+Enoteca la Storia - Los Gatos,ce6b1e52-2c4d-4513-bcb7-b67bb4392def,Farm Labor,,HOURLY,20.00,false,false,false
+Enoteca la Storia - Los Gatos,0fd75696-4acc-4270-89b1-23a246667816,General Manager,,SALARY,,false,false,false
+Enoteca la Storia - Los Gatos,34632b33-f7d4-4524-80b9-c606c9938752,Host,,HOURLY,14.00,true,false,false
+Enoteca la Storia - Los Gatos,69b562db-1e0b-43d9-b938-454b7681f5f5,Kitch Manager (Hourly),,HOURLY,20.00,false,false,false
+Enoteca la Storia - Los Gatos,7d372059-37a5-44d0-b349-a013c217e881,Manager On Duty,,HOURLY,,false,false,false
+Enoteca la Storia - Los Gatos,571a0937-bdcf-48a5-a679-6fe08bfc4314,Owner,,SALARY,,false,false,false
+Enoteca la Storia - Los Gatos,05a7735c-3320-439a-8727-6c5160d3c5e8,Retail Manager,,SALARY,,false,true,false
+Enoteca la Storia - Los Gatos,a161ef6b-bc86-4ec6-a40a-d26f41dfcef2,Server,,HOURLY,14.00,true,true,false
+Enoteca la Storia - Los Gatos,3fa6c2de-692c-45df-8f6e-40ccf1385ab2,Server,,HOURLY,15.50,true,true,false
+Enoteca la Storia - Los Gatos,738bf97e-cc9e-447c-b6fb-2071ad724f53,Shift Supervisor,,HOURLY,19.00,false,true,false
+Enoteca la Storia - Los Gatos,6ba7952f-ccbc-4644-9f4d-5e8dbe58ae4a,Trainer,Server,HOURLY,15.00,true,false,false
+Enoteca la Storia - Los Gatos,176ff612-1ee2-48a6-a5d7-33b6e7d92722,Wine Club,,HOURLY,,false,false,false
+Enoteca la Storia - Los Gatos,b19fc875-4ec9-42a1-b96c-fd81d8b5e39d,false,,,,false,false,false
+Enoteca la Storia - Los Gatos,ef2d12c2-712a-4c52-aac1-9bd8f3285154,false,,,,false,false,false
