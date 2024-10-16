@@ -154,7 +154,6 @@ def fix_missing_fields(filename):
         dataframes[sheetname]=data
 
     def fix_modifier(cols,sheetname):
-        print("sheetname ",sheetname)
         data=read_or_create_sheet(filename,sheet_name=sheetname)
         data['posDisplayName']=data['modifierName']
         data['multiSelect']=["FALSE" for i in range(len(data))]
@@ -179,7 +178,6 @@ def fix_missing_fields(filename):
         data.drop('modifierId', axis=1, inplace=True)
         # data = data.loc[:, ~data.columns.str.contains('^Unnamed')]
         dataframes[sheetname]=data
-        print(data['multiSelect'])
 
 
 

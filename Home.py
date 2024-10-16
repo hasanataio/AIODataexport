@@ -7,6 +7,7 @@ from screens.fixmissingfield.missing_fields_steamlit import run_fix_missing_fiel
 from screens.aioconverter.employee_home import show_employee_screen
 from screens.aioconverter.converter_home import show_home_screen
 from screens.Heartland_Files_Converter.heart_land_app import heart_land_main
+from screens.square_file_converter.square_app import square_main
 
 # CSS styles
 css = """
@@ -92,6 +93,8 @@ if __name__ == "__main__":
                 set_page('converter_home')
             if st.button("🏠 Heartland Menu", use_container_width=True):
                 set_page('heartland_home')
+            if st.button("🏠 Square Menu", use_container_width=True):
+                set_page('square_home')
         
         upload_to_aio_expander=st.expander("Upload to AIO")
         with upload_to_aio_expander:
@@ -123,4 +126,7 @@ if __name__ == "__main__":
         show_employee_screen()
     elif st.session_state.page == 'heartland_home':
         heart_land_main()
+    elif st.session_state.page == 'square_home':
+        square_main()
+        
     
