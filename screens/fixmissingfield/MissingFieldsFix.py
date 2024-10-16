@@ -123,12 +123,12 @@ def fix_missing_fields(filename):
         data['id']=[i for i in range(1,len(data)+1)]
         data['posDisplayName']=data['itemName']
         data['kdsDisplayName']=data['itemName']
-        data['showOnMenu']=[True for i in range(len(data))]				
-        data['showOnline']=[True for i in range(len(data))]	
-        data['showPOS']=[True for i in range(len(data))]	
-        data['showQR']=[True for i in range(len(data))]	
-        data['showThirdParty']=[True for i in range(len(data))]	
-        data['orderQuantityLimit']=[True for i in range(len(data))]	
+        data['showOnMenu']=["TRUE" for i in range(len(data))]				
+        data['showOnline']=["TRUE" for i in range(len(data))]	
+        data['showPOS']=["TRUE" for i in range(len(data))]	
+        data['showQR']=["TRUE" for i in range(len(data))]	
+        data['showThirdParty']=["TRUE" for i in range(len(data))]	
+        data['orderQuantityLimit']=["TRUE" for i in range(len(data))]	
         data['minLimit']=[0 for i in range(len(data))]	
         data['maxLimit']=[50 for i in range(len(data))]
         dataframes[sheetname]=data
@@ -143,33 +143,34 @@ def fix_missing_fields(filename):
         data['posDisplayName']=data['optionName']
         data['kdsDisplayName']=data['optionName']
         data['price']=[0 for i in range(len(data))]
-        data['isStockAvailable']=[True for i in range(len(data))]
-        data['isSizeModifier']=[False for i in range(len(data))]
+        data['isStockAvailable']=["TRUE" for i in range(len(data))]
+        data['isSizeModifier']=["FALSE" for i in range(len(data))]
         dataframes[sheetname]=data
 
     def modifier_modifider_options(cols,sheetname):
         data=read_or_create_sheet(filename,sheet_name=sheetname)
-        data['isDefaultSelected']=[False for i in range(len(data))]
+        data['isDefaultSelected']=["FALSE" for i in range(len(data))]
         data['maxLimit']=[1 for i in range(len(data))]
         dataframes[sheetname]=data
 
     def fix_modifier(cols,sheetname):
+        print("sheetname ",sheetname)
         data=read_or_create_sheet(filename,sheet_name=sheetname)
         data['posDisplayName']=data['modifierName']
-        data['multiSelect']=[False for i in range(len(data))]
-        data['isNested']=[False for i in range(len(data))]
-        data['isOptional']=[True for i in range(len(data))]
+        data['multiSelect']=["FALSE" for i in range(len(data))]
+        data['isNested']=["FALSE" for i in range(len(data))]
+        data['isOptional']=["TRUE" for i in range(len(data))]
         data['priceType']=["individual" for i in range(len(data))]
-        data['canGuestSelectMoreModifiers']=[True for i in range(len(data))]
+        data['canGuestSelectMoreModifiers']=["TRUE" for i in range(len(data))]
         data['minSelector']=[0 for i in range(len(data))]
-        data['isSizeModifier']=[False for i in range(len(data))]
-        data['showOnPos']=[True for i in range(len(data))]
-        data['showOnKiosk']=[True for i in range(len(data))]
-        data['showOnMpos']=[True for i in range(len(data))]
-        data['showOnQR']=[True for i in range(len(data))]
-        data['showOnline']=[True for i in range(len(data))]
-        data['showOnThirdParty']=[True for i in range(len(data))]
-        data['limitIndividualModifierSelection']=[True for i in range(len(data))]
+        data['isSizeModifier']=["FALSE" for i in range(len(data))]
+        data['showOnPos']=["TRUE" for i in range(len(data))]
+        data['showOnKiosk']=["TRUE" for i in range(len(data))]
+        data['showOnMpos']=["TRUE" for i in range(len(data))]
+        data['showOnQR']=["TRUE" for i in range(len(data))]
+        data['showOnline']=["TRUE" for i in range(len(data))]
+        data['showOnThirdParty']=["TRUE" for i in range(len(data))]
+        data['limitIndividualModifierSelection']=["TRUE" for i in range(len(data))]
         df2=pd.read_excel(filename,sheet_name="Modifier ModifierOptions")
         modifier_counts = df2.groupby('modifierId').size().reset_index(name='count')
         data = data.merge(modifier_counts, left_on='id', right_on='modifierId', how='left')
@@ -178,6 +179,8 @@ def fix_missing_fields(filename):
         data.drop('modifierId', axis=1, inplace=True)
         # data = data.loc[:, ~data.columns.str.contains('^Unnamed')]
         dataframes[sheetname]=data
+        print(data['multiSelect'])
+
 
 
 

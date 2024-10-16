@@ -92,7 +92,12 @@ if __name__ == "__main__":
                 set_page('converter_home')
             if st.button("🏠 Heartland Menu", use_container_width=True):
                 set_page('heartland_home')
-                
+        
+        upload_to_aio_expander=st.expander("Upload to AIO")
+        with upload_to_aio_expander:
+            st.link_button("Stage V2", "https://stagev2-backend.dev.aioapp.com/api-docs",use_container_width=True)
+            st.link_button("UAT V2", "https://uatv2-backend.dev.aioapp.com/api-docs/",use_container_width=True)
+        
 
                 
 
