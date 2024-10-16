@@ -6,7 +6,7 @@ from screens.clover.clover_employee import clover_emp
 from screens.fixmissingfield.missing_fields_steamlit import run_fix_missing_fields
 from screens.aioconverter.employee_home import show_employee_screen
 from screens.aioconverter.converter_home import show_home_screen
-
+from screens.Heartland_Files_Converter.heart_land_app import heart_land_main
 
 # CSS styles
 css = """
@@ -88,11 +88,13 @@ if __name__ == "__main__":
         with menu_expander:
             if st.button("🍞 Toast Menu", use_container_width=True):
                 set_page('toast_menu')
-
-        converter_expander=st.expander("Converter")
-        with converter_expander:
-            if st.button("🏠 Menu And Recipe", use_container_width=True):
+            if st.button("🏠 Clover Menu", use_container_width=True):
                 set_page('converter_home')
+            if st.button("🏠 Heartland Menu", use_container_width=True):
+                set_page('heartland_home')
+                
+
+                
 
             # if st.button("📝 Employees", use_container_width=True):
             #     set_page('employee_home')
@@ -114,3 +116,6 @@ if __name__ == "__main__":
         show_home_screen()
     elif st.session_state.page == 'employee_home':
         show_employee_screen()
+    elif st.session_state.page == 'heartland_home':
+        heart_land_main()
+    
