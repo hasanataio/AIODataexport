@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
-
+import io
+from screens.fixmissingfield.auto_convert import auto_fix_fields
 def fun_items_sheet_handler(file):
     items_sheet_df = pd.read_excel(file, sheet_name='Items')
     items_sheet_df = items_sheet_df.dropna(how='all')
@@ -64,17 +65,39 @@ def fun_items_sheet_handler_with_category(file):
     return final_aio_df
 
 
+# def fun_sections_sheet_handler(file):
+#     sections_sheet_df = pd.read_excel(file, sheet_name='Items')
+#     sections_sheet_df.dropna(how='all')
+#     sections_sheet_df = sections_sheet_df.drop_duplicates(subset=['Category'], keep='first')
+#     sections_sheet_df = sections_sheet_df.dropna(subset=['Category'])
+#
+#     sections_sheet_df['id'] = range(1, len(sections_sheet_df) + 1)
+#     final_aio_df = sections_sheet_df[['id', 'Category']].copy()
+#
+#     new_column_names = ['id', 'categoryName']
+#     final_aio_df.rename(columns=dict(zip(final_aio_df.columns, new_column_names)))
+#     final_aio_df["parentCategoryId"] = np.nan
+#     final_aio_df["image (posImage)"] = np.nan
+#     final_aio_df["kdsDisplayName"] = np.nan
+#     final_aio_df["posDisplayName"] = np.nan
+#     final_aio_df["sortOrder"] = np.nan
+#     final_aio_df["kioskImage"] = np.nan
+#     final_aio_df["startTime"] = np.nan
+#     final_aio_df["endTime"] = np.nan
+#     final_aio_df["settingId"] = np.nan
+#     final_aio_df["menuIds"] = np.nan
+#     final_aio_df["tagIds"] = np.nan
+#     return final_aio_df
+
 def fun_sections_sheet_handler(file):
     sections_sheet_df = pd.read_excel(file, sheet_name='Items')
-    sections_sheet_df.dropna(how='all')
+    sections_sheet_df.dropna(how='all', inplace=True)
     sections_sheet_df = sections_sheet_df.drop_duplicates(subset=['Category'], keep='first')
     sections_sheet_df = sections_sheet_df.dropna(subset=['Category'])
-
     sections_sheet_df['id'] = range(1, len(sections_sheet_df) + 1)
     final_aio_df = sections_sheet_df[['id', 'Category']].copy()
-
     new_column_names = ['id', 'categoryName']
-    final_aio_df.rename(columns=dict(zip(final_aio_df.columns, new_column_names)))
+    final_aio_df.rename(columns=dict(zip(final_aio_df.columns, new_column_names)), inplace=True)
     final_aio_df["parentCategoryId"] = np.nan
     final_aio_df["image (posImage)"] = np.nan
     final_aio_df["kdsDisplayName"] = np.nan
@@ -86,16 +109,16 @@ def fun_sections_sheet_handler(file):
     final_aio_df["settingId"] = np.nan
     final_aio_df["menuIds"] = np.nan
     final_aio_df["tagIds"] = np.nan
-    return final_aio_df
 
+    return final_aio_df
 
 def fun_item_category_mapping(old_items_df, old_modifiers_df):
 
     items_df = old_items_df[['id', 'itemName', 'itemCategory']].copy()
-    modifiers_df = old_modifiers_df[['id', 'Category']].copy()
+    modifiers_df = old_modifiers_df[['id', 'categoryName']].copy()
 
     new_items_df_column_names = {'id': 'item_id', 'itemName': 'item_name', 'itemCategory':'modifiers_in_items'}
-    new_modifiers_df_column_names = {'id': 'modifier_id', 'Category': 'modifier'}
+    new_modifiers_df_column_names = {'id': 'modifier_id', 'categoryName': 'modifier'}
 
     items_df.rename(columns=new_items_df_column_names, inplace=True)
     modifiers_df.rename(columns=new_modifiers_df_column_names, inplace=True)
@@ -120,12 +143,6 @@ def fun_item_category_mapping(old_items_df, old_modifiers_df):
     df['sortOrder'] = np.nan
 
     return df
-
-
-def fun_write_headers(ws, headers):
-    ws.insert_rows(1)
-    for col, header in zip(range(1, len(headers) + 1), headers):
-        ws.cell(row=1, column=col, value=header)
 
 
 def fun_sheet_filler(excel_writer):
@@ -270,8 +287,8 @@ def fun_sheet_filler(excel_writer):
     item_modifier_group_headers_df = pd.DataFrame(columns=item_modifier_group_headers)
 
     modifier_options_headers_df.to_excel(excel_writer, sheet_name="Modifier Option", index=False)
-    modifier_headers_df.to_excel(excel_writer, sheet_name="Menu", index=False)
-    menu_headers_df.to_excel(excel_writer, sheet_name="Item", index=False)
+    modifier_headers_df.to_excel(excel_writer, sheet_name="Modifier", index=False)
+    menu_headers_df.to_excel(excel_writer, sheet_name="Menu", index=False)
     setting_headers_df.to_excel(excel_writer, sheet_name="Setting", index=False)
     visibility_settings_headers_df.to_excel(excel_writer, sheet_name="Visibility Setting", index=False)
     day_schedule_headers_df.to_excel(excel_writer, sheet_name="Day Schedule", index=False)
@@ -284,7 +301,6 @@ def fun_sheet_filler(excel_writer):
     tag_headers_df.to_excel(excel_writer, sheet_name="Tag", index=False)
     item_modifier_headers_df.to_excel(excel_writer, sheet_name="Item Modifiers", index=False)
     item_modifier_group_headers_df.to_excel(excel_writer, sheet_name="Item Modifier Group", index=False)
-
 
 
 
@@ -312,17 +328,35 @@ def square_main():
     st.write("Upload an Excel file, process it, and download the result.")
 
     uploaded_file = st.file_uploader("Choose an Excel file", type="xlsx")
-    
+    dataframes=None
     if uploaded_file is not None:
         st.write("File uploaded successfully. Click below to process.")
-        
-        if st.button("Process File"):
-            # Process the file and create the download link
-            download_path = process_file(uploaded_file)
-            with open(download_path, "rb") as file:
-                st.download_button(
-                    label="Download Processed File",
-                    data=file,
-                    file_name="square_raw.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                )
+        # Process the file and create the download link
+        download_path = process_file(uploaded_file)
+        with open(download_path, "rb") as file:
+            file_content = io.BytesIO(file.read()) 
+            dataframes=auto_fix_fields(file_content)
+            st.download_button(
+                label="Download Processed File",
+                data=file,
+                file_name="square_raw.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+            
+        output = io.BytesIO()
+
+        # Use the buffer as the Excel file
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            for key in dataframes.keys():
+                dataframes[key].to_excel(writer, sheet_name=key, index=False)
+            
+        # Seek to the beginning of the stream
+        output.seek(0)
+
+        # Provide the download link
+        st.download_button(
+            label="Download Missing Fields Fixed File",
+            data=output,
+            file_name='missing_fields_fix.xlsx',
+            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )

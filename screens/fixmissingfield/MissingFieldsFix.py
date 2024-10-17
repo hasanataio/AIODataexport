@@ -91,6 +91,10 @@ def fix_missing_fields(filename):
         return data
 
 
+    def remove_quotations(column):
+        column = column.str.replace(r"[\'\"]", "", regex=True)
+        return column
+
     def fix_menu_sheet(cols,sheetname):
         data=read_or_create_sheet(filename,sheet_name=sheetname)
         if len(data['menuName'].values)<1 or data['menuName'].isnull().any():
@@ -104,14 +108,14 @@ def fix_missing_fields(filename):
         category_names=list(data['categoryName'])
         data['id']=[i for i in range(1,len(data)+1)]
         data['posDisplayName']=category_names
+        data['posDisplayName']=remove_quotations(data['posDisplayName'])
         data['kdsDisplayName']=category_names
+        data['kdsDisplayName']=remove_quotations(data['kdsDisplayName'])
         data['sortOrder']=[i for i in range(1,len(data)+1)]
         data['menuIds']=[1 for i in range(1,len(data)+1)]
         dataframes[sheetname]=data
 
     def fix_category_items_sheet(cols,sheetname):
-        
-        
         data=read_or_create_sheet(filename,sheet_name=sheetname)
         data['id']=[i for i in range(1,len(data)+1)]
         data['sortOrder']=[i for i in range(1,len(data)+1)]
@@ -121,6 +125,7 @@ def fix_missing_fields(filename):
         
         data=read_or_create_sheet(filename,sheet_name=sheetname)
         data['id']=[i for i in range(1,len(data)+1)]
+        data['itemName']=remove_quotations(data['itemName'])
         data['posDisplayName']=data['itemName']
         data['kdsDisplayName']=data['itemName']
         data['showOnMenu']=["TRUE" for i in range(len(data))]				
@@ -140,9 +145,11 @@ def fix_missing_fields(filename):
 
     def fix_modifier_options(cols,sheetname):
         data=read_or_create_sheet(filename,sheet_name=sheetname)
+        data['optionName']=remove_quotations(data['optionName'])
         data['posDisplayName']=data['optionName']
         data['kdsDisplayName']=data['optionName']
-        data['price']=[0 for i in range(len(data))]
+        if not pd.to_numeric(data['price'], errors='coerce').notnull().any():
+            data['price']=[0 for i in range(len(data))]
         data['isStockAvailable']=["TRUE" for i in range(len(data))]
         data['isSizeModifier']=["FALSE" for i in range(len(data))]
         dataframes[sheetname]=data
@@ -155,6 +162,7 @@ def fix_missing_fields(filename):
 
     def fix_modifier(cols,sheetname):
         data=read_or_create_sheet(filename,sheet_name=sheetname)
+        data['modifierName']=remove_quotations(data['modifierName'])
         data['posDisplayName']=data['modifierName']
         data['multiSelect']=["FALSE" for i in range(len(data))]
         data['isNested']=["FALSE" for i in range(len(data))]
