@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 from screens.utils import load_sheets, read_this
 from screens.toast.toast_utils.menu import fill_menu
-
+from screens.fixmissingfield.auto_convert import auto_fix_fields
+import io
 
 # Constants for file paths and salary limits
 EXCEL_FILE_PATH = "menu_desired_format/menu_desired.xlsx"
@@ -63,8 +64,28 @@ def process_data():
                   st.session_state['itemmodifierselectiondetails_export'])
         # ***********************************************
 
+        dataframes=None
         with open(SAVE_FILE_PATH, 'rb') as f:
             data = f.read()
+            file_content = io.BytesIO(data)
+            dataframes=auto_fix_fields(file_content)
+            output = io.BytesIO()
+
+            # Use the buffer as the Excel file
+            with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+                for key in dataframes.keys():
+                    dataframes[key].to_excel(writer, sheet_name=key, index=False)
+                
+            # Seek to the beginning of the stream
+            output.seek(0)
+
+            # Provide the download link
+            st.download_button(
+                label="Download Missing Fields Fixed File",
+                data=output,
+                file_name='missing_fields_fix.xlsx',
+                mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            )
 
         st.download_button(
             label="Download the updated Menu Excel file",
@@ -82,6 +103,8 @@ def process_data():
             file_name="Missing_Menu.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
+
+        
 
         st.success("Config File Updated")
 

@@ -1,5 +1,8 @@
 import pandas as pd
 import streamlit as st
+from screens.fixmissingfield.auto_convert import auto_fix_fields
+import io
+
 def fun_items_sheet_handler(file):
     items_sheet_df = pd.read_excel(file, sheet_name='Items')
     items_sheet_df = items_sheet_df.dropna(how='all')
@@ -321,17 +324,36 @@ def heart_land_main():
     st.write("Upload an Excel file, process it, and download the result.")
 
     uploaded_file = st.file_uploader("Choose an Excel file", type="xlsx")
-    
+    dataframes=None
     if uploaded_file is not None:
         st.write("File uploaded successfully. Click below to process.")
-        
-        if st.button("Process File"):
-            # Process the file and create the download link
-            download_path = process_file(uploaded_file)
-            with open(download_path, "rb") as file:
-                st.download_button(
-                    label="Download Processed File",
-                    data=file,
-                    file_name="heartland_exported.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                )
+        # Process the file and create the download link
+        download_path = process_file(uploaded_file)
+        with open(download_path, "rb") as file:
+            file_content = io.BytesIO(file.read()) 
+            dataframes=auto_fix_fields(file_content)
+
+            st.download_button(
+                label="Download Processed File",
+                data=file,
+                file_name="heartland_exported.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+
+        output = io.BytesIO()
+
+        # Use the buffer as the Excel file
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            for key in dataframes.keys():
+                dataframes[key].to_excel(writer, sheet_name=key, index=False)
+            
+        # Seek to the beginning of the stream
+        output.seek(0)
+
+        # Provide the download link
+        st.download_button(
+            label="Download Missing Fields Fixed File",
+            data=output,
+            file_name='missing_fields_fix.xlsx',
+            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
