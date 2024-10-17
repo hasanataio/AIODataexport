@@ -100,11 +100,18 @@ def fix_missing_fields(filename):
         if len(data['menuName'].values)<1 or data['menuName'].isnull().any():
             for col in missing_fields[sheetname].keys():
                 data[col]=[missing_fields[sheetname][col]]
+        else:
+            data['posDisplayName'] = data['menuName']
+            data['menuDescription'] = data['menuName']
+            data['posButtonColor']=["#e34032" for i in range(len(data['menuDescription']))]
+            data['sortOrder']=[i+1 for i in range(len(data['menuDescription']))]
+            data['restaurantId']=[1 for i in range(len(data['menuDescription']))]
         dataframes[sheetname]=data
 
         
     def fix_category_sheet(cols,sheetname):
         data=read_or_create_sheet(filename,sheet_name=sheetname)
+        data['categoryName']=remove_quotations(data['categoryName'])
         category_names=list(data['categoryName'])
         data['id']=[i for i in range(1,len(data)+1)]
         data['posDisplayName']=category_names
@@ -112,7 +119,8 @@ def fix_missing_fields(filename):
         data['kdsDisplayName']=category_names
         data['kdsDisplayName']=remove_quotations(data['kdsDisplayName'])
         data['sortOrder']=[i for i in range(1,len(data)+1)]
-        data['menuIds']=[1 for i in range(1,len(data)+1)]
+        if data['menuIds'].isnull().all():
+            data['menuIds']=[1 for i in range(1,len(data)+1)]
         dataframes[sheetname]=data
 
     def fix_category_items_sheet(cols,sheetname):

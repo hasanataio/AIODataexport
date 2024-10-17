@@ -48,9 +48,9 @@ def show_home_screen():
 
 
                 st.download_button(
-                    label="Download AIO Template",
+                    label="Download Clover to AIO",
                     data=file2,
-                    file_name=os.path.basename(aio_template_path)
+                    file_name="Clover to AIO.xlsx"
                 )
 
             output = io.BytesIO()
@@ -65,9 +65,9 @@ def show_home_screen():
 
             # Provide the download link
             st.download_button(
-                label="Download Missing Fields Fixed File",
+                label="Download Final Clover to AIO",
                 data=output,
-                file_name='missing_fields_fix.xlsx',
+                file_name='Final Clover to AIO.xlsx',
                 mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             )
 

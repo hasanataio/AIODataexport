@@ -53,13 +53,13 @@ def fill_category_sheet(sheets_dict, parent_categories, sub_categories):
 
     # Set parentCategoryId to None for parent categories
     category.loc[category['parentCategoryId'] == "nan", 'parentCategoryId'] = None
-    
-    # Create a new row with category named "Uncategorized" and id should be 0
+    print("asfasfs ",[list(category['id'])[-1]+1])
+    # Create a new row with category named "Misc" and id should be 0
     new_row = pd.DataFrame({
-        "id": [0],
-        "categoryName": ["Uncategorized"],
-        "posDisplayName": ["Uncategorized"],
-        "kdsDisplayName": ["Uncategorized"],
+        "id": [list(category['id'])[-1]+1],
+        "categoryName": ["Misc"],
+        "posDisplayName": ["Misc"],
+        "kdsDisplayName": ["Misc"],
         "parentCategoryId": [None],
         "menuIds": [None]
     })
@@ -390,7 +390,7 @@ def fill_menu(sheets_dict, menu_export, menugroup_export, menuitem_export, menuo
     for item_id in items_with_no_categories:
         new_row = pd.DataFrame({
         "id": [len(sheets_dict["Category Items"]) + 1],
-        "categoryId": [0],
+        "categoryId": [len(sheets_dict["Category"])],
         "itemId": [item_id],
         "sortOrder": [None]
         })

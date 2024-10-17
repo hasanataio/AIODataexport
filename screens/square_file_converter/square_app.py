@@ -337,9 +337,9 @@ def square_main():
             file_content = io.BytesIO(file.read()) 
             dataframes=auto_fix_fields(file_content)
             st.download_button(
-                label="Download Processed File",
+                label="Download Square to AIO",
                 data=file,
-                file_name="square_raw.xlsx",
+                file_name="Square to AIO.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
             
@@ -355,8 +355,8 @@ def square_main():
 
         # Provide the download link
         st.download_button(
-            label="Download Missing Fields Fixed File",
+            label="Download Final Square to AIO",
             data=output,
-            file_name='missing_fields_fix.xlsx',
+            file_name='Final Square to AIO.xlsx',
             mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )

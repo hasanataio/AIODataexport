@@ -81,16 +81,16 @@ def process_data():
 
             # Provide the download link
             st.download_button(
-                label="Download Missing Fields Fixed File",
+                label="Download Final Toast to AIO",
                 data=output,
-                file_name='missing_fields_fix.xlsx',
+                file_name='Final Toast to AIO.xlsx',
                 mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             )
 
         st.download_button(
-            label="Download the updated Menu Excel file",
+            label="Toast to AIO",
             data=data,
-            file_name="Menu.xlsx",
+            file_name="Toast to AIO.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
 

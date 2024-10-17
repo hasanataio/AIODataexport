@@ -1,7 +1,8 @@
 import pandas as pd
+import numpy as np
 import streamlit as st
-from screens.fixmissingfield.auto_convert import auto_fix_fields
 import io
+from screens.fixmissingfield.auto_convert import auto_fix_fields
 
 def fun_items_sheet_handler(file):
     items_sheet_df = pd.read_excel(file, sheet_name='Items')
@@ -12,6 +13,43 @@ def fun_items_sheet_handler(file):
     new_column_names = {'name': 'itemName', 'description': 'itemDescription', 'price': 'itemPrice'}
 
     final_aio_df = final_aio_df.rename(columns=new_column_names)
+    columns_to_add = [
+        # "itemDescription",
+        "itemPicture",
+        "onlineImage",
+        "thirdPartyImage",
+        "kioskItemImage",
+        "calories",
+        "preparationTime",
+        "stockStatus",
+        "showOnMenu",
+        "showOnline",
+        "showPOS",
+        "showQR",
+        "showThirdParty",
+        "posDisplayName",
+        "kdsName",
+        "startTime",
+        "endTime",
+        "taxLinkedWithParentSetting",
+        "stockValue",
+        "calculatePricesWithTaxIncluded",
+        "takeoutException",
+        "orderQuantityLimit",
+        "minLimit",
+        "maxLimit",
+        "noMaxLimit",
+        "inheritTagsFromCategory",
+        "inheritModifiersFromCategory",
+        "settingId",
+        "stationIds",
+        "addonIds",
+        "taxIds",
+        "tagIds",
+        "allergenIds"
+    ]
+    for column in columns_to_add:
+        final_aio_df[column] = np.nan
     return final_aio_df
 
 
@@ -23,6 +61,15 @@ def fun_sections_sheet_handler(file):
 
     new_column_names = {'name': 'categoryName'}
     final_aio_df.rename(columns=new_column_names, inplace=True)
+    modifier_options_headers = [
+        "id",
+        "optionName",
+        "posDisplayName",
+        "kdsDisplayName",
+        "price",
+        "isStockAvailable",
+        "isSizeModifier"
+    ]
     return final_aio_df
 
 
@@ -34,6 +81,17 @@ def fun_ingredients_sheet_handler(file):
 
     new_column_names = {'name': 'optionName'}
     final_aio_df.rename(columns=new_column_names, inplace=True)
+    modifier_options_headers = [
+        # "id",
+        # "optionName",
+        "posDisplayName",
+        "kdsDisplayName",
+        "price",
+        "isStockAvailable",
+        "isSizeModifier"
+    ]
+    for column in modifier_options_headers:
+        final_aio_df[column] = np.nan
     return final_aio_df
 
 
@@ -45,6 +103,23 @@ def fun_groups_sheet_handler(file):
 
     new_column_names = {'name': 'menuName'}
     final_aio_df.rename(columns=new_column_names, inplace=True)
+    menu_headers = [
+        # "id",
+        # "menuName",
+        "posDisplayName",
+        "menuDescription",
+        "picture",
+        "startTime",
+        "endTime",
+        "genericModifierId",
+        "restaurantId",
+        "sortOrder",
+        "settingId",
+        "posButtonColor"
+    ]
+
+    for column in menu_headers:
+        final_aio_df[column] = np.nan
     return final_aio_df
 
 
@@ -56,6 +131,36 @@ def fun_modifiers_sheet_handler(file):
 
     new_column_names = {'name': 'modifierName'}
     final_aio_df.rename(columns=new_column_names, inplace=True)
+    modifier_headers = [
+        # "id",
+        # "modifierName",
+        "posDisplayName",
+        "limit",
+        "price",
+        "multiSelect",
+        "parentModifierId",
+        "isNested",
+        "addNested",
+        "isOptional",
+        "stockStatus",
+        "priceType",
+        "canGuestSelectMoreModifiers",
+        "minSelector",
+        "maxSelector",
+        "noMaxSelection",
+        "isSizeModifier",
+        "prefix",
+        "pizzaSelection",
+        "showOnPos",
+        "showOnKiosk",
+        "showOnMpos",
+        "showOnQR",
+        "showOnline",
+        "showOnThirdParty",
+        "limitIndividualModifierSelection"
+    ]
+    for column in modifier_headers:
+        final_aio_df[column] = np.nan
     return final_aio_df
 
 
@@ -69,7 +174,7 @@ def fun_item_modifier_mapping(items_df_path, modifiers_df_path):
     items_df = old_items_df[['new_item_id', 'name', 'modifiers']].copy()
     modifiers_df = old_modifiers_df[['new_modifier_id', 'name']].copy()
 
-    new_items_df_column_names = {'new_item_id': 'item_id', 'name': 'item_name', 'modifiers':'modifiers_in_items'}
+    new_items_df_column_names = {'new_item_id': 'item_id', 'name': 'item_name', 'modifiers': 'modifiers_in_items'}
     new_modifiers_df_column_names = {'new_modifier_id': 'modifier_id', 'name': 'modifier'}
 
     items_df.rename(columns=new_items_df_column_names, inplace=True)
@@ -88,7 +193,7 @@ def fun_item_modifier_mapping(items_df_path, modifiers_df_path):
     first_elements, second_elements = zip(*item_modifier_mapping)
 
     df = pd.DataFrame(list(zip(first_elements, second_elements)), columns=['itemId', 'modifierId'])
-
+    df['sortOrder'] = np.nan
     return df
 
 
@@ -120,6 +225,8 @@ def create_modifier_item_mapping(items_df_path, modifiers_df_path):
     modifiers_df.apply(create_modifier_item_mapping, axis=1)
     first_elements, second_elements = zip(*modifier_item_mapping)
     df = pd.DataFrame(list(zip(first_elements, second_elements)), columns=['modifierId', 'modifierOptionId'])
+    df['isDefaultSelected'] = np.nan
+    df['maxLimit'] = np.nan
     return df
 
 
@@ -139,17 +246,15 @@ def fun_category_menu_mapping(uploaded_file):
     modifiers_df.rename(columns=new_modifiers_df_column_names, inplace=True)
     # --------------------------------------------------------------------------
 
-    item_modifier_mapping_dict = {}
+    item_modifier_mapping_dict = {item_id: [] for item_id in items_df['item_id']}
 
     def create_item_modifier_mapping(row):
         item_id = row['item_id']
         modifiers = row['modifiers_in_items'].strip('"').split('","') if pd.notna(row['modifiers_in_items']) else []
         for modifier in modifiers:
+            # Only add valid modifier IDs
             modifier_id = modifiers_df[modifiers_df['modifier'] == modifier]['modifier_id'].values[0]
-            if item_id in item_modifier_mapping_dict:
-                item_modifier_mapping_dict[item_id].append(modifier_id)
-            else:
-                item_modifier_mapping_dict[item_id] = [modifier_id]
+            item_modifier_mapping_dict[item_id].append(modifier_id)
 
     items_df.apply(create_item_modifier_mapping, axis=1)
 
@@ -162,7 +267,21 @@ def fun_category_menu_mapping(uploaded_file):
 
     new_col_names = {'item_id': 'id', 'item_name': 'categoryName', 'modifier_id': 'menuIds'}
     merged_df.rename(columns=new_col_names, inplace=True)
-
+    column_names = [
+        "parentCategoryId",
+        "image (posImage)",
+        "kdsDisplayName",
+        "posDisplayName",
+        "sortOrder",
+        "kioskImage",
+        "startTime",
+        "endTime",
+        "settingId",
+        # "menuIds",
+        "tagIds"
+    ]
+    for column in column_names:
+        merged_df[column] = np.nan
     return merged_df
 
 
@@ -197,20 +316,11 @@ def fun_item_category_mapping(items_df_path, modifiers_df_path):
     df = pd.DataFrame(list(zip(first_elements, second_elements)), columns=['categoryId', 'itemId'])
     df['id'] = range(1, len(df) + 1)
     df = df[['id', 'categoryId', 'itemId']]
-
+    df['sortOrder'] = np.nan
     return df
 
 
 def fun_sheet_filler(excel_writer):
-    modifier_options_headers = [
-        "id",
-        "optionName",
-        "posDisplayName",
-        "kdsDisplayName",
-        "price",
-        "isStockAvailable",
-        "isSizeModifier"
-    ]
     setting_headers = [
         "id",
         "type"
@@ -267,7 +377,6 @@ def fun_sheet_filler(excel_writer):
         "sortOrder"
     ]
 
-    modifier_options_headers_df = pd.DataFrame(columns=modifier_options_headers)
     setting_headers_df = pd.DataFrame(columns=setting_headers)
     visibility_settings_headers_df = pd.DataFrame(columns=visibility_settings_headers)
     day_schedule_headers_df = pd.DataFrame(columns=day_schedule_headers)
@@ -278,7 +387,6 @@ def fun_sheet_filler(excel_writer):
     tag_headers_df = pd.DataFrame(columns=tag_headers)
     item_modifier_group_headers_df = pd.DataFrame(columns=item_modifier_group_headers)
 
-    modifier_options_headers_df.to_excel(excel_writer, sheet_name="Modifier Option", index=False)
     setting_headers_df.to_excel(excel_writer, sheet_name="Setting", index=False)
     visibility_settings_headers_df.to_excel(excel_writer, sheet_name="Visibility Setting", index=False)
     day_schedule_headers_df.to_excel(excel_writer, sheet_name="Day Schedule", index=False)
@@ -334,9 +442,9 @@ def heart_land_main():
             dataframes=auto_fix_fields(file_content)
 
             st.download_button(
-                label="Download Processed File",
+                label="Download Heartland to AIO",
                 data=file,
-                file_name="heartland_exported.xlsx",
+                file_name="Heartland to AIO.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
@@ -352,8 +460,8 @@ def heart_land_main():
 
         # Provide the download link
         st.download_button(
-            label="Download Missing Fields Fixed File",
+            label="Download Final Heartland to AIO",
             data=output,
-            file_name='missing_fields_fix.xlsx',
+            file_name='Final Heartland to AIO.xlsx',
             mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
