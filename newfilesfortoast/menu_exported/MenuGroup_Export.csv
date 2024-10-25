@@ -1,0 +1,6 @@
+Item ID,GUID,Name,Number,Imported ID,Base Price,Created Date,Archived,Modifier,Parent Name,Parent Id,Parent Class
+1,0b7d67ba-4800-418c-8b0f-3075af0a0e11,Antipasti,,,0,12/19/2020,No,No,,,Menu
+2,0cb878f7-2512-46ef-961c-9add84308f09,Primi Piatti,,,0,5/16/2019,No,No,,,Menu
+3,11b9a636-a820-4425-a2a6-04b5b5549998,Secondi Piatti,,,0,7/13/2019,No,No,,,Menu
+4,3a13e0ef-7cff-43e5-a983-c28d4e81bf07,Dolci,,,0,7/12/2019,No,No,,,Menu
+5,3a6c18bb-3a9c-44df-ae2b-b189935b0a11,Bevande,,,0,7/21/2021,No,No,,,Menu

@@ -103,29 +103,26 @@ def fill_item_sheet(sheets_dict, item_export):
     sheets_dict["Item"] = items
     return sheets_dict
 
-
 def fill_modifier_sheet(sheets_dict, modifier_export):
     # *****************************************************
     # ********** Filling Modifier Sheet ******************
     # *****************************************************
-    # Remove archived modifiers
     if "Archived" in modifier_export.columns:
         modifier_export = modifier_export[modifier_export["Archived"].apply(lambda x: x.lower() if isinstance(x, str) else x) != "yes"]
 
-    # Identify names of duplicated modifiers (case-insensitive) and drop all duplicates
-    modifier_export["Name_lower"] = modifier_export["Name"].str.lower()
-    duplicated_modifiers = modifier_export[modifier_export.duplicated(subset=["Name_lower"], keep=False)]["Name"].unique()
-    modifier_export = modifier_export.drop_duplicates(subset=["Name_lower"], keep=False).drop(columns=["Name_lower"])
+    # Drop duplicate modifiers with the same name (case-insensitive)
+    modifier_export = modifier_export.drop_duplicates(
+        subset=["Name"], keep='first', ignore_index=True)
 
-    # Create the modifier DataFrame with unique names only
-    modifier = sheets_dict["Modifier"][0:0].copy()
+    # Create the modifier DataFrame
+    modifier = sheets_dict["Modifier"][0:0]
     modifier['id'] = pd.Series(range(1, len(modifier_export) + 1))
-    modifier['modifierName'] = modifier_export['Name'].reset_index(drop=True)
+    modifier['modifierName'] = modifier_export['Name']
     modifier['price'] = None
 
     # Assign the filled DataFrame to 'sheets_dict["Modifier"]'
     sheets_dict["Modifier"] = modifier
-    return sheets_dict, duplicated_modifiers
+    return sheets_dict
 
 def fill_modifier_option_sheet(sheets_dict, modifier_option_export):
     # *****************************************************
@@ -296,19 +293,11 @@ def fill_online_item_category(sheets_dict, onlineItemCategoryMapping):
     return sheets_dict
 
 
-import pandas as pd
-
-def fill_item_modifiers(sheets_dict, item_modifiers, duplicated_modifiers):
+def fill_item_modifiers(sheets_dict, item_modifiers):
 
     # ********************************************
     # ********** Filling Item Modifiers***********
     # ********************************************
-    
-    print("**************************************************************")
-    print("**************************************************************")
-    print(duplicated_modifiers)
-    print("**************************************************************")
-    print("**************************************************************")
 
     # Group by "Parent Menu Selection" and create lists of "Option Group Name"
     item_modifier_report_dict = (
@@ -324,59 +313,39 @@ def fill_item_modifiers(sheets_dict, item_modifiers, duplicated_modifiers):
     modifier_ids = sheets_dict["Modifier"][["id", "modifierName"]].copy()
     modifier_ids["modifierName"] = modifier_ids["modifierName"].str.lower()
 
-    # remove nan from duplicated_modifiers
-    duplicated_modifiers = [modifier for modifier in duplicated_modifiers if pd.notna(modifier)]
-    #make duplicated modifiers lower
-    duplicated_modifiers = [modifier.lower() for modifier in duplicated_modifiers]
-
-    # Initialize list to store new unique modifiers
-    new_modifiers = []
-    for menu_item, modifiers in item_modifier_report_dict.items():
-        menu_item_lower = menu_item.lower()
-
-        if menu_item_lower in item_ids["itemName"].values:
-            for modifier in modifiers:
-                modifier_lower = modifier.lower()
-
-                # Check if modifier is in the provided duplicated_modifiers list
-                if modifier_lower in duplicated_modifiers:
-                    print("**************************************************************")
-                    print("**************************************************************")
-                    print(modifier_lower)
-                    print("**************************************************************")
-                    print("**************************************************************")
-                    unique_modifier_name = f"{modifier}_{menu_item}"
-                    new_modifiers.append({
-                        "id": len(sheets_dict["Modifier"]) + len(new_modifiers) + 1,
-                        "modifierName": unique_modifier_name,
-                        "price": None
-                    })
-
-    # Append new unique modifiers to sheets_dict["Modifier"]
-    if new_modifiers:
-        new_modifiers_df = pd.DataFrame(new_modifiers)
-        sheets_dict["Modifier"] = pd.concat([sheets_dict["Modifier"], new_modifiers_df], ignore_index=True)
-
-    # Update modifier_ids after adding new modifiers
-    modifier_ids = sheets_dict["Modifier"][["id", "modifierName"]].copy()
-    modifier_ids["modifierName"] = modifier_ids["modifierName"].str.lower()
-
     # Create the mapping dictionaries
     item_id_map = dict(zip(item_ids["itemName"], item_ids["id"]))
-    modifier_id_map = dict(zip(modifier_ids["modifierName"], modifier_ids["id"]))
+    modifier_id_map = dict(
+        zip(modifier_ids["modifierName"], modifier_ids["id"]))
 
-    # Map item_modifier_report_dict to item_modifier_report_dict_ids
+    # Create item_modifier_report_dict_ids with error handling
     item_modifier_report_dict_ids = {}
+
     for menu_item, modifiers in item_modifier_report_dict.items():
         menu_item_lower = menu_item.lower()
         if menu_item_lower in item_id_map:
             item_id = item_id_map[menu_item_lower]
             modifier_ids_list = []
-
             for modifier in modifiers:
                 modifier_lower = modifier.lower()
                 if modifier_lower in modifier_id_map:
                     modifier_ids_list.append(modifier_id_map[modifier_lower])
+                else:
+                    # Add new modifier with name "item_name Mods" if not found
+                    new_modifier_name = f"{menu_item} Mods"
+                    new_modifier_id = len(sheets_dict["Modifier"]) + 1
+                    
+                    # Use pd.concat instead of append
+                    new_row = pd.DataFrame({
+                        "id": [new_modifier_id], 
+                        "modifierName": [new_modifier_name],
+                        "price": [0]
+                    })
+                    sheets_dict["Modifier"] = pd.concat([sheets_dict["Modifier"], new_row], ignore_index=True)
+                    
+                    # Update modifier_id_map with the new modifier
+                    modifier_id_map[new_modifier_name.lower()] = new_modifier_id
+                    modifier_ids_list.append(new_modifier_id)
 
             item_modifier_report_dict_ids[item_id] = modifier_ids_list
 
@@ -401,13 +370,14 @@ def fill_item_modifiers(sheets_dict, item_modifiers, duplicated_modifiers):
 
     # Drop duplicates
     item_modifiers_df = item_modifiers_df.drop_duplicates(
-        subset=["itemId", "modifierId"], keep='first', ignore_index=True
-    )
+        subset=["itemId", "modifierId"], keep='first', ignore_index=True)
 
     # Fill the sheets_dict["Item Modifiers"] with the new data
     sheets_dict["Item Modifiers"] = item_modifiers_df
 
     return sheets_dict
+
+
 
 def fill_modifier_groups(sheets_dict, modifier_options):
     # Drop rows with missing Modifier
@@ -424,6 +394,31 @@ def fill_modifier_groups(sheets_dict, modifier_options):
     modifier_options["Modifier"] = modifier_options["Modifier"].str.lower().str.strip()
     modifier_options["Option Group Name"] = modifier_options["Option Group Name"].str.lower().str.strip()
     modifier_options["Parent Menu Selection"] = modifier_options["Parent Menu Selection"].str.lower().str.strip()
+
+    # Identify rows with NaN in 'Option Group Name'
+    nan_rows = modifier_options[modifier_options["Option Group Name"].isna()]
+
+    new_rows = []
+    # Generate new id
+    new_id = len(sheets_dict["Modifier"]) + 1
+    for index, row in nan_rows.iterrows():
+        # Create new row for sheets_dict["Modifier"]
+        new_row = {
+            'id': new_id,
+            'modifierName': row["Parent Menu Selection"] + " Mods"
+        }
+        new_id += 1
+        new_rows.append(new_row)
+    
+    # Append new rows to sheets_dict["Modifier"]
+    if new_rows:
+        new_rows_df = pd.DataFrame(new_rows)
+        sheets_dict["Modifier"] = pd.concat([sheets_dict["Modifier"], new_rows_df], ignore_index=True)
+
+    # Replace NaN in 'Option Group Name' with 'Parent Menu Selection' + " Mods"
+    modifier_options.loc[modifier_options["Option Group Name"].isna(), "Option Group Name"] = (
+        modifier_options["Parent Menu Selection"] + " Mods"
+    )
 
     # Create dictionaries for quick lookups
     modifier_dict = sheets_dict["Modifier"].set_index("modifierName")["id"].to_dict()
@@ -479,37 +474,6 @@ def fill_online_item_modifiers(sheets_dict, onlineItemModifierMapping):
         .to_dict()
     )
 
-    # in onlineItemModifierMapping, we have modifier_type col
-    # rename modifier_type column to isOptional
-    onlineItemModifierMapping = onlineItemModifierMapping.rename(columns={"modifier_type": "isOptional", "modifier_name":"modifierName"})
-
-    # replace (Optional) with True, and Required with False (case sensitive)
-    onlineItemModifierMapping["isOptional"] = onlineItemModifierMapping["isOptional"].replace(
-        {"Optional": True, "Required": False})
-    
-    # update sheet["Modifier"]["isOptional"] with onlineItemModifierMapping["isOptional"] where the modifierName are the same
-    #******************************FILL ISOPTIONAL AND MIN MAX SELECTOR ***************************************
-    # Normalize modifierName to lowercase for both DataFrames
-    sheets_dict["Modifier"]["modifierName"] = sheets_dict["Modifier"]["modifierName"].str.lower()
-    onlineItemModifierMapping["modifierName"] = onlineItemModifierMapping["modifierName"].str.lower()
-
-    # Deduplicate onlineItemModifierMapping by keeping the first occurrence
-    onlineItemModifierMapping_unique = onlineItemModifierMapping.drop_duplicates(subset="modifierName")
-
-    # Map 'isOptional' column based on 'modifierName'
-    sheets_dict["Modifier"]["isOptional"] = sheets_dict["Modifier"]["modifierName"].map(
-        onlineItemModifierMapping_unique.set_index("modifierName")["isOptional"]
-    )
-
-    # Fill any NaN values in 'isOptional' with False, and convert to boolean
-    sheets_dict["Modifier"]["isOptional"] = sheets_dict["Modifier"]["isOptional"].fillna(False).astype(bool)
-
-    # Set 'minSelector' and 'maxSelector' to 1 if 'isOptional' is False
-    sheets_dict["Modifier"]["minSelector"] = sheets_dict["Modifier"]["isOptional"].apply(lambda x: 1 if not x else None)
-    sheets_dict["Modifier"]["maxSelector"] = sheets_dict["Modifier"]["isOptional"].apply(lambda x: 1 if not x else None)
-
-    #*************************************************************************************************
-    
     # Convert to lower case for case-insensitive comparison
     item_ids = sheets_dict["Item"][["id", "itemName"]].copy()
     item_ids["itemName"] = item_ids["itemName"].str.lower()
@@ -535,22 +499,21 @@ def fill_online_item_modifiers(sheets_dict, onlineItemModifierMapping):
                 if modifier_lower in modifier_id_map:
                     modifier_ids_list.append(modifier_id_map[modifier_lower])
                 else:
-                    pass
-                    # # Add new modifier with name "item_name Mods" if not found
-                    # new_modifier_name = f"{menu_item} Mods"
-                    # new_modifier_id = len(sheets_dict["Modifier"]) + 1
+                    # Add new modifier with name "item_name Mods" if not found
+                    new_modifier_name = f"{menu_item} Mods"
+                    new_modifier_id = len(sheets_dict["Modifier"]) + 1
                     
-                    # # Use pd.concat instead of append
-                    # new_row = pd.DataFrame({
-                    #     "id": [new_modifier_id], 
-                    #     "modifierName": [new_modifier_name],
-                    #     "price": [0]
-                    # })
-                    # sheets_dict["Modifier"] = pd.concat([sheets_dict["Modifier"], new_row], ignore_index=True)
+                    # Use pd.concat instead of append
+                    new_row = pd.DataFrame({
+                        "id": [new_modifier_id], 
+                        "modifierName": [new_modifier_name],
+                        "price": [0]
+                    })
+                    sheets_dict["Modifier"] = pd.concat([sheets_dict["Modifier"], new_row], ignore_index=True)
                     
-                    # # Update modifier_id_map with the new modifier
-                    # modifier_id_map[new_modifier_name.lower()] = new_modifier_id
-                    # modifier_ids_list.append(new_modifier_id)
+                    # Update modifier_id_map with the new modifier
+                    modifier_id_map[new_modifier_name.lower()] = new_modifier_id
+                    modifier_ids_list.append(new_modifier_id)
 
             item_modifier_report_dict_ids[item_id] = modifier_ids_list
 
@@ -593,8 +556,8 @@ def fill_online_item_modifiers(sheets_dict, onlineItemModifierMapping):
     sheets_dict["Modifier"].dropna(subset=['modifierName'], inplace=True)
     sheets_dict["Modifier Option"].dropna(subset=['optionName'], inplace=True)
 
-    onlineItemModifierMapping["isOptional"] = onlineItemModifierMapping["isOptional"].str.lower().str.strip()
-    onlineItemModifierMapping["modifierName"] = onlineItemModifierMapping["modifierName"].str.lower().str.strip()
+    onlineItemModifierMapping["option_name"] = onlineItemModifierMapping["option_name"].str.lower().str.strip()
+    onlineItemModifierMapping["modifier_name"] = onlineItemModifierMapping["modifier_name"].str.lower().str.strip()
     onlineItemModifierMapping["item_name"] = onlineItemModifierMapping["item_name"].str.lower().str.strip()
 
     # Identify rows with NaN in 'Option Group Name'
@@ -607,7 +570,7 @@ def fill_online_item_modifiers(sheets_dict, onlineItemModifierMapping):
         # Create new row for sheets_dict["Modifier"]
         new_row = {
             'id': new_id,
-            'modifierName': row["modifierName"] + "_" + row["item_name"]
+            'modifierName': row["item_name"] + " Mods"
         }
         new_id += 1
         new_rows.append(new_row)
@@ -618,8 +581,8 @@ def fill_online_item_modifiers(sheets_dict, onlineItemModifierMapping):
         sheets_dict["Modifier"] = pd.concat([sheets_dict["Modifier"], new_rows_df], ignore_index=True)
 
     # Replace NaN in 'Option Group Name' with 'Parent Menu Selection' + " Mods"
-    onlineItemModifierMapping.loc[onlineItemModifierMapping["modifierName"].isna(), "modifierName"] = (
-        onlineItemModifierMapping["modifierName"] + "_" + onlineItemModifierMapping["item_name"]
+    onlineItemModifierMapping.loc[onlineItemModifierMapping["modifier_name"].isna(), "modifier_name"] = (
+        onlineItemModifierMapping["item_name"] + " Mods"
     )
 
     # Create dictionaries for quick lookups
@@ -633,7 +596,7 @@ def fill_online_item_modifiers(sheets_dict, onlineItemModifierMapping):
     # Iterate through the modifier options to fill in the rows
     for index, row in onlineItemModifierMapping.iterrows():
         modifier_name = row["option_name"]
-        option_group_name = row["modifierName"]
+        option_group_name = row["modifier_name"]
 
         # Get the modifier_id and option_group_id from dictionaries
         modifier_id = modifier_dict.get(option_group_name)
@@ -677,14 +640,14 @@ def fill_menu(sheets_dict, menu_export, menugroup_export, menuitem_export, menuo
 
     sheets_dict = fill_category_sheet(sheets_dict, parent_categories=menu_export, sub_categories=menugroup_export)
     sheets_dict = fill_item_sheet(sheets_dict, item_export=menuitem_export)
-    sheets_dict, duplicated_modifiers = fill_modifier_sheet(sheets_dict, modifier_export=menuoptiongroup_export)
+    sheets_dict = fill_modifier_sheet(sheets_dict, modifier_export=menuoptiongroup_export)
     sheets_dict = fill_modifier_option_sheet(sheets_dict, modifier_option_export=menuoption_export)
     sheets_dict = fill_category_items(sheets_dict, item_category_report=itemselectiondetails_export)
-    sheets_dict = fill_item_modifiers(sheets_dict, item_modifiers=itemmodifierselectiondetails_export, duplicated_modifiers=duplicated_modifiers)
+    sheets_dict = fill_item_modifiers(sheets_dict, item_modifiers=itemmodifierselectiondetails_export)
     sheets_dict = fill_modifier_groups(sheets_dict, modifier_options=itemmodifierselectiondetails_export)
 
     # fill data from online.
-    if onlineItemCategoryMapping is not None and onlineItemModifierMapping is not None:
+    if onlineItemCategoryMapping and onlineItemModifierMapping:
         print("filling from online")
         sheets_dict = fill_online_item_category(sheets_dict, onlineItemCategoryMapping=onlineItemCategoryMapping)
         sheets_dict = fill_online_item_modifiers(sheets_dict, onlineItemModifierMapping=onlineItemModifierMapping)

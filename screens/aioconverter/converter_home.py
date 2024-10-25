@@ -30,7 +30,7 @@ def show_home_screen():
         if 'final_recipes' in st.session_state and os.path.exists(os.getcwd() + "/" + st.session_state['final_recipes']):
             # Define the paths to the generated files
             final_recipes_path = os.path.join(os.getcwd(), st.session_state['final_recipes'])
-            aio_template_path = os.path.join(os.getcwd(), "Mijos Menu AIO.xlsx")
+            aio_template_path = os.path.join(os.getcwd(), "Output.xlsx")
 
             # Create a download button for the first file (Recipes)
             with open(final_recipes_path, "rb") as file1:

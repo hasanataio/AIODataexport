@@ -174,7 +174,8 @@ def fix_missing_fields(filename):
         data['posDisplayName']=data['modifierName']
         data['multiSelect']=["FALSE" for i in range(len(data))]
         data['isNested']=["FALSE" for i in range(len(data))]
-        data['isOptional']=["TRUE" for i in range(len(data))]
+        print("Fixing: ",data['isOptional'])
+        data['isOptional'] = data['isOptional'].apply(lambda x: "TRUE" if x != False else "FALSE")
         data['priceType']=["individual" for i in range(len(data))]
         data['canGuestSelectMoreModifiers']=["TRUE" for i in range(len(data))]
         data['minSelector']=[0 for i in range(len(data))]
@@ -188,7 +189,7 @@ def fix_missing_fields(filename):
         data['limitIndividualModifierSelection']=["TRUE" for i in range(len(data))]
         df2=pd.read_excel(filename,sheet_name="Modifier ModifierOptions")
         modifier_counts = df2.groupby('modifierId').size().reset_index(name='count')
-        data = data.merge(modifier_counts, left_on='id', right_on='modifierId', how='left')
+        data = data.merge(modifier_counts, left_on='id', right_on='modifierId',  how='left')
         data['maxSelector'] = data['count'].fillna(0)
         data.drop('count', axis=1, inplace=True)
         data.drop('modifierId', axis=1, inplace=True)

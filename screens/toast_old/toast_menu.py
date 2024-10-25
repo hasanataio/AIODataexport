@@ -2,9 +2,9 @@ import streamlit as st
 import pandas as pd
 from screens.utils import load_sheets, read_this
 from screens.toast.toast_utils.menu import fill_menu
-
 from screens.fixmissingfield.auto_convert import auto_fix_fields
 import io
+
 # Constants for file paths and salary limits
 EXCEL_FILE_PATH = "menu_desired_format/menu_desired.xlsx"
 SAVE_FILE_PATH = "Menu.xlsx"
@@ -17,19 +17,19 @@ def process_data():
     # Read CSV files
     menu_export = st.file_uploader("Upload Menu_Export.csv", type="csv")
     if menu_export is not None:
-        st.session_state['menu_export'] = read_this(menu_export, ftype="csv")
+        st.session_state['menu_export'] = read_this(menu_export)
 
     menugroup_export = st.file_uploader("Upload MenuGroup_Export.csv", type="csv")
     if menugroup_export is not None:
-        st.session_state['menugroup_export'] = read_this(menugroup_export, ftype="csv")
+        st.session_state['menugroup_export'] = read_this(menugroup_export)
 
     menuitem_export = st.file_uploader("Upload MenuItem_Export.csv", type="csv")
     if menuitem_export is not None:
-        st.session_state['menuitem_export'] = read_this(menuitem_export, ftype="csv")
+        st.session_state['menuitem_export'] = read_this(menuitem_export)
 
     menuoptiongroup_export = st.file_uploader("Upload MenuOptionGroup_Export.csv", type="csv")
     if menuoptiongroup_export is not None:
-        st.session_state['menuoptiongroup_export'] = read_this(menuoptiongroup_export, ftype="csv")
+        st.session_state['menuoptiongroup_export'] = read_this(menuoptiongroup_export)
 
     menuoption_export = st.file_uploader("Upload MenuOption_Export.csv", type="csv")
     if menuoption_export is not None:
@@ -37,22 +37,23 @@ def process_data():
 
     itemselectiondetails_export = st.file_uploader("Upload ItemSelectionDetails.csv", type="csv")
     if itemselectiondetails_export is not None:
-        st.session_state['itemselectiondetails_export'] = read_this(itemselectiondetails_export, ftype="csv")
+        st.session_state['itemselectiondetails_export'] = read_this(itemselectiondetails_export)
 
     itemmodifierselectiondetails_export = st.file_uploader("Upload ItemModifierSelectionDetails.csv", type="csv")
     if itemmodifierselectiondetails_export is not None:
-        st.session_state['itemmodifierselectiondetails_export'] = read_this(itemmodifierselectiondetails_export, ftype="csv")
+        st.session_state['itemmodifierselectiondetails_export'] = read_this(itemmodifierselectiondetails_export)
 
     # Ask whether to upload the last two files or not
-    upload_last_two = st.radio("Do you want to upload the Doordash Data file?", ('Yes', 'No'))
+    upload_last_two = st.radio("Do you want to upload the last two files?", ('Yes', 'No'))
 
     if upload_last_two == 'Yes':
-        onlinemapping = st.file_uploader("Upload the xlsx File (sheet1 name: items, sheet2 name: modifiers)", type="xlsx")
-        if onlinemapping is not None:
-            st.session_state['online_item_category_mapping'] = read_this(onlinemapping, ftype="xlsx", sheet_name='items')
-            st.session_state['online_item_modifiers_mapping'] = read_this(onlinemapping, ftype="xlsx", sheet_name="modifiers")
-        else:
-            st.write("Upload the excel file")
+        onlineitemcategorymapping = st.file_uploader("Online Ordering Item and Category Mapping File", type="csv")
+        if onlineitemcategorymapping is not None:
+            st.session_state['online_item_category_mapping'] = read_this(onlineitemcategorymapping)
+
+        onlineitemmodifiersmapping = st.file_uploader("Online Ordering Item and Modifiers Mapping File", type="csv")
+        if onlineitemmodifiersmapping is not None:
+            st.session_state['online_item_modifiers_mapping'] = read_this(onlineitemmodifiersmapping)
     else:
         st.session_state['online_item_category_mapping'] = None
         st.session_state['online_item_modifiers_mapping'] = None
@@ -77,59 +78,6 @@ def process_data():
             st.session_state['online_item_category_mapping'],  # May be None
             st.session_state['online_item_modifiers_mapping']   # May be None
         )
-
-        #calculate stats
-        # sheets are Menu, Category, Category Items, Modifier, Item Modifiers, Modifier Option, Modifier ModifierOptions
-        """
-        1. Show Count of Categories that are not Misc
-        2. Show Count of Items
-        3. Category Items Count mapped with id of Misc Category. (categoryId, itemId)
-        4. Category Items Count mapped without id of Misc Catgory. (categoryId, itemId)
-        5. Show percentage of items mapped out of all in Category Items.
-        6. Show Count of Modifiers
-        7. Show Count of Modifiers Option
-        """
-        item = st.session_state['sheets_dict']['Item']
-        category = st.session_state['sheets_dict']['Category']
-        category_items = st.session_state['sheets_dict']['Category Items']
-        modifier = st.session_state['sheets_dict']['Modifier']
-        modifier_option = st.session_state['sheets_dict']['Modifier Option']
-
-        #1. Show Count of Categories that are not Misc
-        category_not_misc = category[category['categoryName'] != 'Misc']
-        st.write(f"Count of Categories: {category_not_misc.shape[0]}")
-
-        #2. Show Count of Items
-        st.write(f"Count of Items: {len(item)}")
-
-        #3. Category Items Count mapped with id of Misc Category. (categoryId, itemId)
-        misc_category = category[category['categoryName'] == 'Misc']
-
-        if len(misc_category) > 0:
-            misc_category_id = int(misc_category["id"])
-            
-            #4. Category Items Count mapped without id of Misc Catgory. (categoryId, itemId)
-            category_items_mapped = category_items[category_items['categoryId'] != misc_category_id]
-            st.write(f"Category Items Count mapped Catgory: {category_items_mapped.shape[0]}")
-
-            category_items_unmapped = category_items[category_items['categoryId'] == misc_category_id]
-            st.write(f"Category Items Count mapped with Misc Category (no mapping): {category_items_unmapped.shape[0]}")
-
-            #5. Show percentage of items mapped out of all in category items
-            st.write(f"Percentage of items mapped out of all in Category Items: {(category_items_mapped.shape[0]/category_items.shape[0])*100}%")
-        else:
-            #full data mapped
-            st.write(f"Category Items Count mapped with Misc Category (no mapping): 0%")
-            # percentage 100%
-            st.write(f"Percentage of items mapped out of all in Category Items: 100%")
-
-        #6. Show count of modifiers
-        st.write(f"Count of Modifiers: {modifier.shape[0]}")
-
-        #7. Show count of modifier options
-        st.write(f"Count of Modifier Options: {modifier_option.shape[0]}")
-
-
 
         with open(SAVE_FILE_PATH, 'rb') as f:
             data = f.read()

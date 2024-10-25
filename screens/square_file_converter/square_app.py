@@ -3,8 +3,62 @@ import numpy as np
 import streamlit as st
 import io
 from screens.fixmissingfield.auto_convert import auto_fix_fields
+from fuzzywuzzy import fuzz
+from screens.square_file_converter.modules import doordash
+
+def combine_names(item_name, variation_name, threshold=85):
+    if variation_name is None or isinstance(variation_name, float):
+        return item_name
+    # split based on spaces
+    item_words = item_name.split()  
+    variation_words = variation_name.split()  
+    
+    # initializations
+    combined_name = item_words.copy()  
+    extra_words = [] 
+    
+    # iterate each variation word
+    for var_word in variation_words:
+        # check for similar words
+        if not any(fuzz.ratio(var_word, item_word) > threshold for item_word in item_words):
+            extra_words.append(var_word)  
+        
+    # add extra words in brackets
+    if extra_words:
+        combined_name.append(f"({' '.join(extra_words)})")
+    
+    return ' '.join(combined_name)
+
+def clean_data(data):
+
+    data = data[['Item Name', 'Variation Name']]
+    data.loc[:, 'Item Name'] = data['Item Name'].str.strip().str.lower()
+    data.loc[:, 'Variation Name'] = data['Variation Name'].str.strip().str.lower()
+    return data
+
+def preprocessor(data):
+
+    # basic preprocessing
+    data = clean_data(data)
+
+    # keep words with no alternative names as it is
+    # clean = data[data['Variation Name'].isna()]
+    # clean.loc[:, 'AIO Name'] = clean['Item Name']
+
+    # # process only where variation names exsists
+    # process = data[data['Variation Name'].notna()]
+
+    data.loc[:, 'AIO Name'] = data.apply(lambda row: combine_names(row['Item Name'], row['Variation Name']), axis=1)
+
+    # df_combined = pd.concat([process, clean], ignore_index=True)
+    data['AIO Name'] = data['AIO Name'].str.title()
+    aio_names=list(data['AIO Name'])
+    data.drop(columns=['AIO Name'],inplace=True)
+    return aio_names
+
 def fun_items_sheet_handler(file):
     items_sheet_df = pd.read_excel(file, sheet_name='Items')
+    item_varation_names=preprocessor(items_sheet_df)
     items_sheet_df = items_sheet_df.dropna(how='all')
     items_sheet_df['id'] = range(1, len(items_sheet_df) + 1)
 
@@ -50,7 +104,7 @@ def fun_items_sheet_handler(file):
     ]
     for column in columns_to_add:
         final_aio_df[column] = np.nan
-    return final_aio_df
+    return final_aio_df,item_varation_names
 
 
 def fun_items_sheet_handler_with_category(file):
@@ -306,11 +360,10 @@ def fun_sheet_filler(excel_writer):
 
 def process_file(uploaded_file):
     # Process the uploaded file and generate the output DataFrames
-    items_df = fun_items_sheet_handler(uploaded_file)
+    items_df,item_varation_names = fun_items_sheet_handler(uploaded_file)
     sections_df = fun_sections_sheet_handler(uploaded_file)
     item_cat_df = fun_items_sheet_handler_with_category(uploaded_file)
     item_category_df = fun_item_category_mapping(item_cat_df, sections_df)
-    
     # Write to an Excel file using an in-memory buffer
     download_file_path = 'square_raw.xlsx'
     writer = pd.ExcelWriter(download_file_path, engine='openpyxl')
@@ -321,18 +374,34 @@ def process_file(uploaded_file):
     fun_sheet_filler(writer)
     writer._save()
 
-    return download_file_path
+    return download_file_path,item_varation_names
 
 def square_main():
     st.title("Square Template Processor")
     st.write("Upload an Excel file, process it, and download the result.")
 
-    uploaded_file = st.file_uploader("Choose an Excel file", type="xlsx")
+    uploaded_file = st.file_uploader("Upload Square File", type="xlsx")
+    doordash_file = st.file_uploader("Upload Doordash File", type="xlsx")
     dataframes=None
-    if uploaded_file is not None:
+    if uploaded_file is not None and doordash_file is not None:
         st.write("File uploaded successfully. Click below to process.")
         # Process the file and create the download link
-        download_path = process_file(uploaded_file)
+        download_path,item_varation_names= process_file(uploaded_file)
+
+        download_path=doordash.fill_with_doordash(doordash_file,download_path)
+
+        xls = pd.ExcelFile(download_path)
+        df = pd.read_excel(xls, sheet_name="Item")
+
+        # Update the column
+        column_name = "itemName"  # Replace with the actual column name you want to update
+        df[column_name] = item_varation_names
+
+        # Save the updated DataFrame back to the Excel file
+        with pd.ExcelWriter(download_path, mode="a", engine="openpyxl", if_sheet_exists="replace") as writer:
+            df.to_excel(writer, sheet_name="Item", index=False)
+
+
         with open(download_path, "rb") as file:
             file_content = io.BytesIO(file.read()) 
             dataframes=auto_fix_fields(file_content)

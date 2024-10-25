@@ -25,20 +25,49 @@ def save_sheets(dataframes, file_path):
             df.to_excel(writer, sheet_name=sheet_name, index=False)
 
 
-def read_this(uploaded_file):
+import pandas as pd
+import chardet
+
+def read_this(uploaded_file, ftype="csv", sheet_name=None):
+    """
+    Reads files and returns a pandas DataFrame.
+
+    Parameters:
+    1. uploaded_file: The file uploaded online.
+    2. ftype: The file type (default is 'csv'). Supports 'csv' or 'xlsx'.
+    3. sheet: The name of the sheet to load if an Excel file ('xlsx') is loaded (default is None).
+
+    Returns:
+    - DataFrame if the file is read successfully.
+    - None if the file is not read successfully or the file type is unsupported.
+    """
     if uploaded_file is not None:
         try:
             # Read the file contents
             file_contents = uploaded_file.getvalue()
 
-            # Detect the encoding
+            # Detect the encoding (useful for CSV files)
             result = chardet.detect(file_contents)
             encoding = result['encoding']
 
-            # Read the CSV file using the detected encoding
-            df = pd.read_csv(uploaded_file, encoding=encoding)
+            if ftype == "csv":
+                # Read the CSV file using the detected encoding
+                df = pd.read_csv(uploaded_file, encoding=encoding)
+            elif ftype == "xlsx":
+                # Read the Excel file and optionally a specific sheet
+                df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
+            else:
+                print(f"Unsupported file type: {ftype}")
+                return None
+
             return df
         except UnicodeDecodeError as e:
-            print(e)
+            print(f"Encoding error: {e}")
+            return None
+        except Exception as e:
+            print(f"Error reading file: {e}")
+            return None
     else:
+        print("No file uploaded")
         return None
+

@@ -1,0 +1,26 @@
+Location,Order #,Sent Date,Menu Item,Menu Group,Menu,Sales Category,Net Price,Qty,Void?
+Los Gatos,1,4/1/2024 12:00,Bruschetta al Pomodoro,Antipasti ,,Antipasti ,35,1,FALSE
+,2,4/2/2024 12:00,Caprese Salad,Antipasti ,,Antipasti ,36,1,FALSE
+,3,4/3/2024 12:00,Antipasto Misto,Antipasti ,,Antipasti ,37,1,FALSE
+,4,4/4/2024 12:00,Calamari Fritti,Antipasti ,,Antipasti ,38,1,FALSE
+,5,4/5/2024 12:00,Garlic Bread,Antipasti ,,Antipasti ,39,1,FALSE
+,6,4/6/2024 12:00,Spaghetti Carbonara,Primi Piatti ,,Primi Piatti ,40,1,FALSE
+,7,4/7/2024 12:00,Lasagna al Forno,Primi Piatti ,,Primi Piatti ,41,1,FALSE
+,8,4/8/2024 12:00,Fettuccine Alfredo,Primi Piatti ,,Primi Piatti ,42,1,FALSE
+,9,4/9/2024 12:00,Penne Arrabbiata,Primi Piatti ,,Primi Piatti ,43,1,FALSE
+,10,4/10/2024 12:00,Gnocchi al Pesto,Primi Piatti ,,Primi Piatti ,44,1,FALSE
+,11,4/11/2024 12:00,Chicken Parmigiana,Secondi Piatti ,,Secondi Piatti ,45,1,FALSE
+,12,4/12/2024 12:00,Bistecca alla Fiorentina,Secondi Piatti ,,Secondi Piatti ,46,1,FALSE
+,13,4/13/2024 12:00,Veal Marsala,Secondi Piatti ,,Secondi Piatti ,47,1,FALSE
+,14,4/14/2024 12:00,Grilled Salmon,Secondi Piatti ,,Secondi Piatti ,48,1,FALSE
+,15,4/15/2024 12:00,Eggplant Parmigiana,Secondi Piatti ,,Secondi Piatti ,49,1,FALSE
+,16,4/16/2024 12:00,Tiramisù,Dolci ,,Dolci ,50,1,FALSE
+,17,4/17/2024 12:00,Gelato,Dolci ,,Dolci ,51,1,FALSE
+,18,4/18/2024 12:00,Panna Cotta,Dolci ,,Dolci ,52,1,FALSE
+,19,4/19/2024 12:00,Cannoli,Dolci ,,Dolci ,53,1,FALSE
+,20,4/20/2024 12:00,Affogato al Caffè,Dolci ,,Dolci ,54,1,FALSE
+,21,4/21/2024 12:00,Espresso,Bevande ,,Bevande ,55,1,FALSE
+,22,4/22/2024 12:00,Cappuccino,Bevande ,,Bevande ,56,1,FALSE
+,23,4/23/2024 12:00,Italian Soda,Bevande ,,Bevande ,57,1,FALSE
+,24,4/24/2024 12:00,Chianti (Red Wine),Bevande ,,Bevande ,58,1,FALSE
+,,,,,,,,,

@@ -1,0 +1,182 @@
+item_name,modifier_name,isOptional,option_name,option_price
+Cacio e Pepe,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+Cacio e Pepe,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+Cacio e Pepe,Recommended Desserts,TRUE,Cannoli,+$13.00
+Cacio e Pepe,Recommended Desserts,TRUE,Tiramisu,+$15.00
+Cacio e Pepe,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+Mushroom Ravioli,Add Protein,TRUE,Chicken,+$10.00
+Mushroom Ravioli,Add Protein,TRUE,Add Shrimp,+$12.00
+Mushroom Ravioli,Add Protein,TRUE,Add Salmon,+$16.00
+Mushroom Ravioli,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+Mushroom Ravioli,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+Mushroom Ravioli,Recommended Desserts,TRUE,Cannoli,+$13.00
+Mushroom Ravioli,Recommended Desserts,TRUE,Tiramisu,+$15.00
+Mushroom Ravioli,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+Lasagne Lorenzo,Add Protein,TRUE,Chicken,+$10.00
+Lasagne Lorenzo,Add Protein,TRUE,Add Shrimp,+$12.00
+Lasagne Lorenzo,Add Protein,TRUE,Add Salmon,+$16.00
+Lasagne Lorenzo,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+Lasagne Lorenzo,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+Lasagne Lorenzo,Recommended Desserts,TRUE,Cannoli,+$13.00
+Lasagne Lorenzo,Recommended Desserts,TRUE,Tiramisu,+$15.00
+Lasagne Lorenzo,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+Eggplant Parm,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+Eggplant Parm,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+Eggplant Parm,Recommended Desserts,TRUE,Cannoli,+$13.00
+Eggplant Parm,Recommended Desserts,TRUE,Tiramisu,+$15.00
+Eggplant Parm,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+Spaghetti Aglio e Olio,Add Protein,TRUE,Chicken,+$10.00
+Spaghetti Aglio e Olio,Add Protein,TRUE,Add Shrimp,+$12.00
+Spaghetti Aglio e Olio,Add Protein,TRUE,Add Salmon,+$16.00
+Spaghetti Aglio e Olio,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+Spaghetti Aglio e Olio,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+Spaghetti Aglio e Olio,Recommended Desserts,TRUE,Cannoli,+$13.00
+Spaghetti Aglio e Olio,Recommended Desserts,TRUE,Tiramisu,+$15.00
+Spaghetti Aglio e Olio,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+Salmone,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+Salmone,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+Salmone,Recommended Desserts,TRUE,Cannoli,+$13.00
+Salmone,Recommended Desserts,TRUE,Tiramisu,+$15.00
+Salmone,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+Sausage & Peppers,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+Sausage & Peppers,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+Sausage & Peppers,Recommended Desserts,TRUE,Cannoli,+$13.00
+Sausage & Peppers,Recommended Desserts,TRUE,Tiramisu,+$15.00
+Sausage & Peppers,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+Sonny's Meatball Sandwich,Add-ons,TRUE,Wildflower,+$6.00
+Sonny's Meatball Sandwich,Add-ons,TRUE,Orange Honey,+$6.00
+Sonny's Meatball Sandwich,Add-ons,TRUE,Black Truffle Honey,+$7.00
+Sonny's Meatball Sandwich,Add-ons,TRUE,Garlic Chili in Oil,+$3.00
+Sonny's Meatball Sandwich,Add-ons,TRUE,Wine Soaked Fig Spread,+$7.00
+Sonny's Meatball Sandwich,Add-ons,TRUE,Balsamic Glaze,+$4.00
+Sonny's Meatball Sandwich,Add-ons,TRUE,Giardiniera,+$5.00
+Sonny's Meatball Sandwich,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+Sonny's Meatball Sandwich,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+Sonny's Meatball Sandwich,Recommended Desserts,TRUE,Cannoli,+$13.00
+Sonny's Meatball Sandwich,Recommended Desserts,TRUE,Tiramisu,+$15.00
+Sonny's Meatball Sandwich,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+Arthur Ave,Add-ons,TRUE,Wildflower,+$6.00
+Arthur Ave,Add-ons,TRUE,Orange Honey,+$6.00
+Arthur Ave,Add-ons,TRUE,Black Truffle Honey,+$7.00
+Arthur Ave,Add-ons,TRUE,Garlic Chili in Oil,+$3.00
+Arthur Ave,Add-ons,TRUE,Wine Soaked Fig Spread,+$7.00
+Arthur Ave,Add-ons,TRUE,Balsamic Glaze,+$4.00
+Arthur Ave,Add-ons,TRUE,Giardiniera,+$5.00
+Arthur Ave,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+Arthur Ave,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+Arthur Ave,Recommended Desserts,TRUE,Cannoli,+$13.00
+Arthur Ave,Recommended Desserts,TRUE,Tiramisu,+$15.00
+Arthur Ave,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+Tonno Panini,Add-ons,TRUE,Wildflower,+$6.00
+Tonno Panini,Add-ons,TRUE,Orange Honey,+$6.00
+Tonno Panini,Add-ons,TRUE,Black Truffle Honey,+$7.00
+Tonno Panini,Add-ons,TRUE,Garlic Chili in Oil,+$3.00
+Tonno Panini,Add-ons,TRUE,Wine Soaked Fig Spread,+$7.00
+Tonno Panini,Add-ons,TRUE,Balsamic Glaze,+$4.00
+Tonno Panini,Add-ons,TRUE,Giardiniera,+$5.00
+Tonno Panini,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+Tonno Panini,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+Tonno Panini,Recommended Desserts,TRUE,Cannoli,+$13.00
+Tonno Panini,Recommended Desserts,TRUE,Tiramisu,+$15.00
+Tonno Panini,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+Calabrese Lo Riscaldo,Tomato Addition,TRUE,Roma Tomatoes,+$5.00
+Calabrese Lo Riscaldo,Add-ons,TRUE,Wildflower,+$6.00
+Calabrese Lo Riscaldo,Add-ons,TRUE,Orange Honey,+$6.00
+Calabrese Lo Riscaldo,Add-ons,TRUE,Black Truffle Honey,+$7.00
+Calabrese Lo Riscaldo,Add-ons,TRUE,Garlic Chili in Oil,+$3.00
+Calabrese Lo Riscaldo,Add-ons,TRUE,Wine Soaked Fig Spread,+$7.00
+Calabrese Lo Riscaldo,Add-ons,TRUE,Balsamic Glaze,+$4.00
+Calabrese Lo Riscaldo,Add-ons,TRUE,Giardiniera,+$5.00
+Calabrese Lo Riscaldo,Add Protein,TRUE,Chicken,+$10.00
+Calabrese Lo Riscaldo,Add Protein,TRUE,Add Shrimp,+$12.00
+Calabrese Lo Riscaldo,Add Protein,TRUE,Add Salmon,+$16.00
+Calabrese Lo Riscaldo,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+Calabrese Lo Riscaldo,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+Calabrese Lo Riscaldo,Recommended Desserts,TRUE,Cannoli,+$13.00
+Calabrese Lo Riscaldo,Recommended Desserts,TRUE,Tiramisu,+$15.00
+Calabrese Lo Riscaldo,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+Caprese Panini,Add Protein,TRUE,Chicken,+$10.00
+Caprese Panini,Add Protein,TRUE,Add Shrimp,+$12.00
+Caprese Panini,Add Protein,TRUE,Add Salmon,+$16.00
+Caprese Panini,Add-ons,TRUE,Wildflower,+$6.00
+Caprese Panini,Add-ons,TRUE,Orange Honey,+$6.00
+Caprese Panini,Add-ons,TRUE,Black Truffle Honey,+$7.00
+Caprese Panini,Add-ons,TRUE,Garlic Chili in Oil,+$3.00
+Caprese Panini,Add-ons,TRUE,Wine Soaked Fig Spread,+$7.00
+Caprese Panini,Add-ons,TRUE,Balsamic Glaze,+$4.00
+Caprese Panini,Add-ons,TRUE,Giardiniera,+$5.00
+Caprese Panini,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+Caprese Panini,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+Caprese Panini,Recommended Desserts,TRUE,Cannoli,+$13.00
+Caprese Panini,Recommended Desserts,TRUE,Tiramisu,+$15.00
+Caprese Panini,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+The Alba,Add Protein,TRUE,Chicken,+$10.00
+The Alba,Add Protein,TRUE,Add Shrimp,+$12.00
+The Alba,Add Protein,TRUE,Add Salmon,+$16.00
+The Alba,Add-ons,TRUE,Wildflower,+$6.00
+The Alba,Add-ons,TRUE,Orange Honey,+$6.00
+The Alba,Add-ons,TRUE,Black Truffle Honey,+$7.00
+The Alba,Add-ons,TRUE,Garlic Chili in Oil,+$3.00
+The Alba,Add-ons,TRUE,Wine Soaked Fig Spread,+$7.00
+The Alba,Add-ons,TRUE,Balsamic Glaze,+$4.00
+The Alba,Add-ons,TRUE,Giardiniera,+$5.00
+The Alba,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+The Alba,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+The Alba,Recommended Desserts,TRUE,Cannoli,+$13.00
+The Alba,Recommended Desserts,TRUE,Tiramisu,+$15.00
+The Alba,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+Insalata Caprese,Add Protein,TRUE,Chicken,+$10.00
+Insalata Caprese,Add Protein,TRUE,Add Shrimp,+$12.00
+Insalata Caprese,Add Protein,TRUE,Add Salmon,+$16.00
+Insalata Caprese,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+Insalata Caprese,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+Insalata Caprese,Recommended Desserts,TRUE,Cannoli,+$13.00
+Insalata Caprese,Recommended Desserts,TRUE,Tiramisu,+$15.00
+Insalata Caprese,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+Insalata di Tonno,Add Protein,TRUE,Chicken,+$10.00
+Insalata di Tonno,Add Protein,TRUE,Add Shrimp,+$12.00
+Insalata di Tonno,Add Protein,TRUE,Add Salmon,+$16.00
+Insalata di Tonno,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+Insalata di Tonno,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+Insalata di Tonno,Recommended Desserts,TRUE,Cannoli,+$13.00
+Insalata di Tonno,Recommended Desserts,TRUE,Tiramisu,+$15.00
+Insalata di Tonno,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+Caesar,Add-Ons,TRUE,Whole Anchovy,+$3.00
+Caesar,Add Protein,TRUE,Chicken,+$10.00
+Caesar,Add Protein,TRUE,Add Shrimp,+$12.00
+Caesar,Add Protein,TRUE,Add Salmon,+$16.00
+Caesar,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+Caesar,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+Caesar,Recommended Desserts,TRUE,Cannoli,+$13.00
+Caesar,Recommended Desserts,TRUE,Tiramisu,+$15.00
+Caesar,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+Gorgonzola,Add Protein,TRUE,Chicken,+$10.00
+Gorgonzola,Add Protein,TRUE,Add Shrimp,+$12.00
+Gorgonzola,Add Protein,TRUE,Add Salmon,+$16.00
+Gorgonzola,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+Gorgonzola,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+Gorgonzola,Recommended Desserts,TRUE,Cannoli,+$13.00
+Gorgonzola,Recommended Desserts,TRUE,Tiramisu,+$15.00
+Gorgonzola,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+Mista,Add Protein,TRUE,Chicken,+$10.00
+Mista,Add Protein,TRUE,Add Shrimp,+$12.00
+Mista,Add Protein,TRUE,Add Salmon,+$16.00
+Mista,Style Choice,FALSE,Arugula,
+Mista,Style Choice,FALSE,Spring Mix,
+Italian American Meatballs,Mozzarella Addition,TRUE,Mozzarella,+$5.00
+Italian American Meatballs,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+Italian American Meatballs,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+Italian American Meatballs,Recommended Desserts,TRUE,Cannoli,+$13.00
+Italian American Meatballs,Recommended Desserts,TRUE,Tiramisu,+$15.00
+Italian American Meatballs,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+DiStefano Burrata,Tomato Addition,TRUE,Roma Tomatoes,+$5.00
+DiStefano Burrata,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+DiStefano Burrata,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+DiStefano Burrata,Recommended Desserts,TRUE,Cannoli,+$13.00
+DiStefano Burrata,Recommended Desserts,TRUE,Tiramisu,+$15.00
+DiStefano Burrata,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
+Calabrese Shrimp,Recommended Sides And Apps,TRUE,Classic Bruschetta,+$20.00
+Calabrese Shrimp,Recommended Sides And Apps,TRUE,Prosciutto Bruschetta,+$22.00
+Calabrese Shrimp,Recommended Desserts,TRUE,Cannoli,+$13.00
+Calabrese Shrimp,Recommended Desserts,TRUE,Tiramisu,+$15.00
+Calabrese Shrimp,Recommended Desserts,TRUE,Gluten Free Cookies,+$12.00
