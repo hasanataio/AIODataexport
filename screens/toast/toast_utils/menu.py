@@ -183,14 +183,11 @@ def fill_category_items(sheets_dict, item_category_report):
         # Normalize the category name (lowercase and strip spaces for matching)
         category_name_lower = category_name.lower().strip()
 
-        # Debugging: Print the category we're trying to map
-        print(f"Trying to map category: '{category_name_lower}'")
 
         # Check if the category exists in the category_id_map
         if category_name_lower in category_id_map:
             category_id = category_id_map[category_name_lower]
-            print(f"Found matching category: {category_name_lower} -> ID {category_id}")
-            
+
             # Iterate through each menu item under the category
             for item_name in menu_items:
                 # Normalize the item name (lowercase and strip spaces for matching)
@@ -211,9 +208,11 @@ def fill_category_items(sheets_dict, item_category_report):
                     # Increment the sort order
                     sort_order += 1
                 else:
-                    print(f"Warning: Menu item '{item_name}' not found in Item mapping.")
+                    pass
+                    # print(f"Warning: Menu item '{item_name}' not found in Item mapping.")
         else:
-            print(f"Warning: Sales category '{category_name}' not found in Category mapping. Defaulting to Misc.")
+            pass
+            # print(f"Warning: Sales category '{category_name}' not found in Category mapping. Defaulting to Misc.")
 
     # Create the DataFrame from the rows list
     category_items_df = pd.DataFrame(
@@ -263,12 +262,14 @@ def fill_online_item_category(sheets_dict, onlineItemCategoryMapping):
                 if menu_item in item_id_map:
                     item_ids_list.append(item_id_map[menu_item])
                 else:
-                    print(
-                        f"Warning: Menu Item '{menu_item}' not found in item_id_map")
+                    pass
+                    # print(
+                    #     f"Warning: Menu Item '{menu_item}' not found in item_id_map")
             item_modifier_report_dict_ids[category_id] = item_ids_list
         else:
-            print(
-                f"Warning: Online Category '{online_category}' not found in category_id_map")
+            pass
+            # print(
+            #     f"Warning: Online Category '{online_category}' not found in category_id_map")
 
     # Prepare the data for the new DataFrame
     rows = sheets_dict["Category Items"]
@@ -295,7 +296,6 @@ def fill_online_item_category(sheets_dict, onlineItemCategoryMapping):
     sheets_dict["Category Items"] = category_items_df
     return sheets_dict
 
-
 import pandas as pd
 
 def fill_item_modifiers(sheets_dict, item_modifiers, duplicated_modifiers):
@@ -303,12 +303,6 @@ def fill_item_modifiers(sheets_dict, item_modifiers, duplicated_modifiers):
     # ********************************************
     # ********** Filling Item Modifiers***********
     # ********************************************
-    
-    print("**************************************************************")
-    print("**************************************************************")
-    print(duplicated_modifiers)
-    print("**************************************************************")
-    print("**************************************************************")
 
     # Group by "Parent Menu Selection" and create lists of "Option Group Name"
     item_modifier_report_dict = (
@@ -321,14 +315,9 @@ def fill_item_modifiers(sheets_dict, item_modifiers, duplicated_modifiers):
     item_ids = sheets_dict["Item"][["id", "itemName"]].copy()
     item_ids["itemName"] = item_ids["itemName"].str.lower()
 
-    modifier_ids = sheets_dict["Modifier"][["id", "modifierName"]].copy()
-    modifier_ids["modifierName"] = modifier_ids["modifierName"].str.lower()
-
-    # remove nan from duplicated_modifiers
-    duplicated_modifiers = [modifier for modifier in duplicated_modifiers if pd.notna(modifier)]
-    #make duplicated modifiers lower
-    duplicated_modifiers = [modifier.lower() for modifier in duplicated_modifiers]
-
+    # Remove NaN and make duplicated_modifiers lowercase
+    duplicated_modifiers = [modifier.lower() for modifier in duplicated_modifiers if pd.notna(modifier)]
+    
     # Initialize list to store new unique modifiers
     new_modifiers = []
     for menu_item, modifiers in item_modifier_report_dict.items():
@@ -340,11 +329,6 @@ def fill_item_modifiers(sheets_dict, item_modifiers, duplicated_modifiers):
 
                 # Check if modifier is in the provided duplicated_modifiers list
                 if modifier_lower in duplicated_modifiers:
-                    print("**************************************************************")
-                    print("**************************************************************")
-                    print(modifier_lower)
-                    print("**************************************************************")
-                    print("**************************************************************")
                     unique_modifier_name = f"{modifier}_{menu_item}"
                     new_modifiers.append({
                         "id": len(sheets_dict["Modifier"]) + len(new_modifiers) + 1,
@@ -356,6 +340,10 @@ def fill_item_modifiers(sheets_dict, item_modifiers, duplicated_modifiers):
     if new_modifiers:
         new_modifiers_df = pd.DataFrame(new_modifiers)
         sheets_dict["Modifier"] = pd.concat([sheets_dict["Modifier"], new_modifiers_df], ignore_index=True)
+        #drop duplicates
+        sheets_dict["Modifier"] = sheets_dict["Modifier"].drop_duplicates(subset=["modifierName"], keep='first', ignore_index=True)
+        #reset ids
+        sheets_dict["Modifier"]["id"] = range(1, len(sheets_dict["Modifier"]) + 1)
 
     # Update modifier_ids after adding new modifiers
     modifier_ids = sheets_dict["Modifier"][["id", "modifierName"]].copy()
@@ -365,20 +353,31 @@ def fill_item_modifiers(sheets_dict, item_modifiers, duplicated_modifiers):
     item_id_map = dict(zip(item_ids["itemName"], item_ids["id"]))
     modifier_id_map = dict(zip(modifier_ids["modifierName"], modifier_ids["id"]))
 
-    # Map item_modifier_report_dict to item_modifier_report_dict_ids
-    item_modifier_report_dict_ids = {}
-    for menu_item, modifiers in item_modifier_report_dict.items():
-        menu_item_lower = menu_item.lower()
-        if menu_item_lower in item_id_map:
-            item_id = item_id_map[menu_item_lower]
-            modifier_ids_list = []
+    # Map item names and modifier names in item_modifier_report_dict to their IDs
+    item_modifier_report_dict_ids = {
+        item_id_map[item_name.lower()]: [
+            modifier_id_map[modifier.lower()]
+            for modifier in modifiers if modifier.lower() in modifier_id_map
+        ]
+        for item_name, modifiers in item_modifier_report_dict.items()
+        if item_name.lower() in item_id_map
+    }
 
-            for modifier in modifiers:
-                modifier_lower = modifier.lower()
-                if modifier_lower in modifier_id_map:
-                    modifier_ids_list.append(modifier_id_map[modifier_lower])
-
-            item_modifier_report_dict_ids[item_id] = modifier_ids_list
+    # Add any new modifiers that match the pattern "<modifier>_<item>"
+    for new_modifier in new_modifiers:
+        new_modifier_name = new_modifier["modifierName"].lower()
+        item_part = new_modifier_name.split("_")[-1]
+        
+        # Check if the item_part (e.g., "gelato") is a valid item name in item_id_map
+        if item_part in item_id_map:
+            item_id = item_id_map[item_part]
+            modifier_id = modifier_id_map[new_modifier_name]
+            
+            # Add the new item-modifier link to the dictionary
+            if item_id in item_modifier_report_dict_ids:
+                item_modifier_report_dict_ids[item_id].append(modifier_id)
+            else:
+                item_modifier_report_dict_ids[item_id] = [modifier_id]
 
     # Prepare the data for the new DataFrame
     rows = []
@@ -395,19 +394,19 @@ def fill_item_modifiers(sheets_dict, item_modifiers, duplicated_modifiers):
             sort_order = None
 
     # Create the DataFrame
-    item_modifiers_df = pd.DataFrame(
-        rows, columns=["id", "itemId", "modifierId", "sortOrder"]
-    )
+    item_modifiers_df = pd.DataFrame(rows, columns=["id", "itemId", "modifierId", "sortOrder"])
 
     # Drop duplicates
-    item_modifiers_df = item_modifiers_df.drop_duplicates(
-        subset=["itemId", "modifierId"], keep='first', ignore_index=True
-    )
+    item_modifiers_df = item_modifiers_df.drop_duplicates(subset=["itemId", "modifierId"], keep='first', ignore_index=True)
+
+    # Reset the ID in item_modifiers_df
+    item_modifiers_df["id"] = range(1, len(item_modifiers_df) + 1)
 
     # Fill the sheets_dict["Item Modifiers"] with the new data
     sheets_dict["Item Modifiers"] = item_modifiers_df
 
     return sheets_dict
+
 
 def fill_modifier_groups(sheets_dict, modifier_options):
     # Drop rows with missing Modifier
@@ -449,11 +448,12 @@ def fill_modifier_groups(sheets_dict, modifier_options):
                 "maxLimit": 1
             })
         else:
+            pass
             # Print a warning for any missing modifiers or option groups
-            if modifier_id is None:
-                print(f"Warning: Option Group '{option_group_name}' not found in modifier dictionary")
-            if option_group_id is None:
-                print(f"Warning: Modifier '{modifier_name}' not found in option group dictionary")
+            # if modifier_id is None:
+            #     print(f"Warning: Option Group '{option_group_name}' not found in modifier dictionary")
+            # if option_group_id is None:
+            #     print(f"Warning: Modifier '{modifier_name}' not found in option group dictionary")
 
     # Create the DataFrame
     modifiers_groups_df = pd.DataFrame(rows, columns=["modifierId", "modifierOptionId", "isDefaultSelected", "maxLimit"])
@@ -648,11 +648,12 @@ def fill_online_item_modifiers(sheets_dict, onlineItemModifierMapping):
                 "maxLimit": 1
             })
         else:
+            pass
             # Print a warning for any missing modifiers or option groups
-            if modifier_id is None:
-                print(f"Warning: Option Group '{option_group_name}' not found in modifier dictionary")
-            if option_group_id is None:
-                print(f"Warning: Modifier '{modifier_name}' not found in option group dictionary")
+            # if modifier_id is None:
+            #     print(f"Warning: Option Group '{option_group_name}' not found in modifier dictionary")
+            # if option_group_id is None:
+            #     print(f"Warning: Modifier '{modifier_name}' not found in option group dictionary")
 
     # Create the DataFrame
     modifiers_groups_df = pd.DataFrame(rows, columns=["modifierId", "modifierOptionId", "isDefaultSelected", "maxLimit"])

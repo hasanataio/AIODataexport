@@ -281,6 +281,7 @@ def run_first_step(input_file_path):
             for index2, row2 in df2.iterrows():
                 # Count the common options between the two lists
                 common_options = set(row1['Option Name']).intersection(set(row2['Option Name']))
+
                 common_count = len(common_options)
                 
                 # Get the total number of elements in the second dataframe's option list
@@ -290,7 +291,7 @@ def run_first_step(input_file_path):
                     max_common_count = common_count
                     best_match = row2['Option Name']
                     best_match_modifier = row2['Modifier Name']
-            
+
             if max_common_count>=0.5*total_options_in_df1:
                 # Append the results
                 matches.append({

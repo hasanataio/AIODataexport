@@ -70,4 +70,3 @@ def read_this(uploaded_file, ftype="csv", sheet_name=None):
     else:
         print("No file uploaded")
         return None
-
